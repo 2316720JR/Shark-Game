@@ -86,13 +86,13 @@ int main(int argc, char *argv[])
   
   	srand((unsigned)time(NULL));
   	
-	//0. opening
+	//0.opening
    	opening();
 	
-	// 1. 초기화, 플레이어 이름 결정 
+	//1.초기화, 플레이어 이름 결정 
   	board_initBoard();
   	
-	  //1-2. 플레이어 초기화 
+	//1-2.플레이어 초기화 
   	for (i=0;i<N_PLAYER;i++)
   	{
       	player_position[i]=0 ;
@@ -101,9 +101,9 @@ int main(int argc, char *argv[])
       	printf("Player %i's name: ", i+1);
       	scanf("%s", player_name[i]);
       
-  }
+	}
   
-// 2.반복문(플레이어 턴)
+//2.반복문(플레이어 턴)
    do {
        	int step; 
        	int coinResult ;
@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
     		continue;
         }
        
-       // 2-1.플레이어의 상태 출력 
+       //2-1.플레이어의 상태 출력 
        board_printBoardStatus();
        
        for(i=0;i<N_PLAYER;i++) 
@@ -124,14 +124,14 @@ int main(int argc, char *argv[])
       	printPlayerStatus();
 
  
-   // 2-2.주사위 던지기 
+   //2-2.주사위 던지기 
    printf("%s turn!",player_name[turn]);
    printf("press any key to roll the die\n");
    scanf("%d", &c);
    fflush(stdin);
    step = rolldie();
    
-   // 2-3.이동 
+   //2-3.이동 
    player_position[turn] += step ; //기본 이동  
    
    if (player_position[turn] >= N_BOARD)
@@ -142,14 +142,14 @@ int main(int argc, char *argv[])
            player_status[turn] = PLAYERSTATUS_END;
 
        
-   // 2-4.동전 줍기
+   //2-4.동전 줍기
    coinResult = board_getBoardCoin(pos);
    player_coin[turn] += coinResult ;
    
-   // 2-5.다음턴 
+   //2-5.다음 턴 
    turn =  (turn + 1)%N_PLAYER ; //0,1,2,0,1,2, . . .
    
-   // 2-6.if(조건: 모든 플레이어 턴 한 번씩 돌음)로 상어 동작
+   //2-6.if(조건: 모든 플레이어 턴 한 번씩 돌음)로 상어 동작
     if (turn == 0) 
     {
        	int shark_pos = board_stepShark();
