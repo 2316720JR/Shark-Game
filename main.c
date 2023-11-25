@@ -15,24 +15,24 @@ int player_position[N_PLAYER];
 char player_name[N_PLAYER][MAX_CHARNAME];
 int player_coin[N_PLAYER]; //동전 개수 저장 
 int player_status[N_PLAYER]; //0=live, 1=die, 2=end 
-char player_statusString[3][MAX_CHARNAME] = {"LIVE", "DIE", "END"}; //0,1,2가 의미하는 것을 문자열로 저장할 수 있게 
+char player_statusString[3][MAX_CHARNAME] = {"LIVE", "DIE", "END"};  
  
 
 void opening(void)
 {
-	printf("======================================================\n");
-	printf("======================================================\n");
-	printf("======================================================\n");
-	printf("                          ^                           \n");
-	printf("                      SHARK GAME                      \n");
-	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-	printf("======================================================\n");
-	printf("======================================================\n");
+	printf("=======================================================\n");
+	printf("=======================================================\n");
+	printf("=======================================================\n");
+	printf("                           ^                           \n");
+	printf("                      SHARK GAME                       \n");
+	printf("=======================================================\n");
+	printf("=======================================================\n");
+	printf("=======================================================\n");
 }
 
 int rolldie(void)
 {
-	return rand()%MAX_DIE+1; //1부터 6 사이의 값이 나옴 
+	return rand()%MAX_DIE+1;
 }
 
 void printPlayerPosition(int player)
@@ -64,14 +64,15 @@ void printPlayerStatus(void)
 	{
 		printf("%s : pos %i, coin % i, status : %s\n", 
 				player_name[i], player_position[i], player_coin[i], player_statusString[player_status[i]]);
-		printf("------------------\n");
 	}
+	printf("------------------\n");
 }
 
 void checkDie(void)
 {
 	int i;
 	for (i=0;i<N_PLAYER;i++)
+	
 	if(board_gerBoardStatis(player_position[i] == BOARDSTATUS_NOK))
 		player_status[i] = PLAYERSTATUS_DIE;
 }
@@ -89,6 +90,7 @@ int main(int argc, char *argv[])
 	
 	//1.초기화 & 플레이어 이름 결정
 	board_initBoard();
+	
 	//1-2.플레이어 초기화 
 	for (i=0; i<N_PLAYER;i++)
 	{
@@ -111,20 +113,13 @@ int main(int argc, char *argv[])
 			continue;
 		}
 		
-		board_printfBoardStatus();
-		
-		pos += step;
-		//printf()
-		coinResult = board_gerBoardCoin(pos);
-		
-		prinf("press any key to continue");
-		scanf("%d", &c);
-		fflush(stdin);
 
 		//2-1.플레이어의 상태 출력
 		board_printBoardStatus();
+		
 		for (i=0;i<N_PLAYER;i++)
 			printPlayerPosition(i);
+			
 		printPlayerStatus(); 
 		
 		//2-2.주사위 던지기
@@ -132,39 +127,42 @@ int main(int argc, char *argv[])
 		prinf("press any key to roll a die\n");
 		scanf("%d", &c);
 		fflush(stdin);
-		step = rolldie;
+		step = rolldie();
 		
 		//2-3.이동
 		player_position[turn] += step; //기본 이동
+		
 		if (player_position[turn] >= N_BOARD)
 		{
 			player_position[turn] = N_BOARD-1;
-			player_status[turn] = PLAYERSTATUS_END;
-		}
+	}
 		if (player_position[turn] == N_BOARD-1)
 			player_status[turn] = PLAYERSTATUS_END;
 			
-			
-		//printf()
 		
 		//2-4.동전 줍기
 		coinResult = board_getBoardCoin(pos);
 		player_coin[turn] += coinResult;
-		//printf()
 		
 		//2-5.다음 턴으로
-		turn = (turn + 1)%N_PLAYER; //012012...같이 세가지 숫자가 반복되는 형식으로 
+		turn = (turn + 1)%N_PLAYER; //0,1,2,0,1,2, . . .
 		
 		//2-6.if(조건: 모든 플레이어 턴 한 번씩 돌음)로 상어 동작
 		if (turn == 0)
 		{
 			int shark_pos = board_stepShark();
 			printf("Shark moved to %i\n", shark_pos);
-			//check die
+			
 			checkDie();
 		} 
-	} while(1);
+	} while(game_end()==0);
 	
+	printf("Congratulations! The Winner is Player %s!\n", player_name[getWinner()]);
+	
+	system("PAUSE");
+	return 0; 
+}
+
 	//3.승자 계산, 출력
 	int game_end(void)
 	{
@@ -210,6 +208,3 @@ int main(int argc, char *argv[])
 		}
 		return winner;
 	}
-	
-	return 0;
-}
